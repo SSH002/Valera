@@ -6,7 +6,7 @@ class Valera
 	end
 
 	def go_work
-		@money = @money + 500
+		@money = @money + 1000
 		@fatigue = @fatigue + 30
 		@mana = @mana - 15
 	end
@@ -17,18 +17,23 @@ class Valera
 	end
 
 	def drink_with_marginals
-		@mana = @mana + 25
-		@happiens = @happiens + 3
-		@money = @money - 1000
+		if @money >= 1500
+			@mana = @mana + 25
+			@happiens = @happiens + 3
+			@money = @money - 1500
+		else
+			puts 'У Валеры недостаточно средств для того, чтобы выпить с маргиналами.'
+		end
 	end
 
 	def sing
-		income
+		income = 0
 
-		if @mana >= 50
-			income = 50 + rand 201
+		if @mana >= 30
+			income = 50 + rand(401)
 			@money = @money + income
-		income = 0 else
+		else
+			income = 0
 		end
 		@mana = @mana - 15
 
@@ -43,7 +48,22 @@ class Valera
 
 	def sleep
 		@happiens = @happiens + 1
-		@fatigue = @fatigue - 40
+		@fatigue = @fatigue - 50
 		@mana = @mana - 30
+	end
+
+	def blackjack
+		loop do
+			system 'clear'
+			card_valera = 0
+			card_enemy = 0
+			loop do
+				card_valera = card_valera + 2 + rand(10)
+				card_enemy = card_enemy + 2 + rand(10)
+				print 'Ваши карты: ', card_valera
+				print 'Карты противника: ', card_enemy
+				system 'clear'
+			end
+		end
 	end
 end

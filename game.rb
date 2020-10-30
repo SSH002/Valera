@@ -7,9 +7,67 @@ class Game
     @valera = Valera.new
   end
 
+  def victory
+    system 'clear'
+    puts 'Поздравляю! Накоплено достаточно средств, чтобы Валера мог купить себе ноутбук и стать фрилансером.'
+    start_end_game
+  end
+
+	def check_status
+		if @valera.health <= 0
+			puts 'Вы погибли!'
+		@valera.health = 100 elsif @valera.health > 100
+		end
+
+		if @valera.mana <= 0
+			@valera.mana = 0
+			@valera.happiens = @valera.happiens - 1
+		elsif @valera.mana > 100
+			@valera.mana = 100
+		end
+		
+		if @valera.happiens <= -10
+			system 'clear'
+			puts 'Валера сломался пот гнётом судьбы, не выдержав испытаний, что на него выпали.'
+			puts 'Валера, стремясь восстановить душевное равновесие, ушёл в запой.'
+			puts '==============================ИГРА=ОКОНЧЕНА=============================='
+			start_end_game
+		elsif @valera.happiens > 10
+			@valera.happiens = 10
+		end
+
+		if @valera.fatigue < 0
+			@valera.fatigue = 0
+		elsif @valera.fatigue >= 100
+			@valera.fatigue = 100
+			@valera.happiens = @valera.happiens - 1
+		end
+	end
+
+	def start_end_game
+		loop do
+			puts 'Хотите начать сначала, или выйти из игры?'
+			print 'Ввод >> '
+			input = readline
+
+			case input[0]
+				when 'Y', 'y'
+					load_game('res/general.ini')
+					game_menu
+				when 'N', 'n'
+					exit 0
+				else
+					print "\nВведены неверные данные! Введите \'Y\' или \'N\'\n"
+			end
+		end
+	end
+
   def game_menu
     system 'clear'
     loop do
+      victory if @valera.money >= 30000
+
+	  check_status
       stats
       print "(1) - Пойти на работу\n"
       print "(2) - Отдыхать\n"
@@ -52,11 +110,11 @@ class Game
 
   def save_game(file_name)
     data = []
-    data[1] = @valera.health
-    data[2] = @valera.mana
-    data[3] = @valera.happiens
-    data[4] = @valera.fatigue
-    data[5] = @valera.money
+    data[0] = @valera.health
+    data[1] = @valera.mana
+    data[2] = @valera.happiens
+    data[3] = @valera.fatigue
+    data[4] = @valera.money
 
     File.open(file_name, 'w') do |file|
       data.each { |x| file.puts(x) }
@@ -69,24 +127,24 @@ class Game
       file.each_line { |x| data.push(x) }
     end
 
-    @valera.health = data[0].chop
-    @valera.mana = data[1].chop
-    @valera.happiens = data[2].chop
-    @valera.fatigue = data[3].chop
-    @valera.money = data[4].chop
+    @valera.health = (data[0].chop).to_i
+    @valera.mana = (data[1].chop).to_i
+    @valera.happiens = (data[2].chop).to_i
+    @valera.fatigue = (data[3].chop).to_i
+    @valera.money = (data[4].chop).to_i
   end
 
   def stats
-    print 'Здоровье: ', @valera.health, "\n"
+    print "Здоровье: #{@valera.health}\n"
     print "Мана: #{@valera.mana}", "\n"
-    print "Довольство: #{@valera.happiens}", "\n"
-    print "Усталость: #{@valera.fatigue}", "\n"
-    print "Деньги: #{@valera.money}", "\n\n"
+    print "Довольство: #{@valera.happiens}\n"
+    print "Усталость: #{@valera.fatigue}\n"
+    print "Деньги: #{@valera.money}\n\n"
   end
 
   def menu
     print "Вы в главном меню\n\n"
-    print "(1) - Создать игру\n"
+    print "(1) - Начать новую игру\n"
     print "(2) - Загрузить игру\n"
     print "(3) - Об игре\n"
     print "(4) - Выйти из игры\n"
@@ -117,7 +175,7 @@ class Game
       break if File.file?(file_name)
 
       system 'clear'
-      print "Ошибка! Файл #{file_name} не существует.\n"
+      print "Ошибка! Файл #{input.chop} не существует.\n"
       file_list('saves', 'sv')
       print "\nВведите название файла:\nВвод >> "
       input = readline
@@ -154,15 +212,15 @@ class Game
   end
 
   def rules
-    print "+---------------------------------------------------+\n"
-    print "Данное приложение является реализацией игры \"Маргинал Валера\".\n"
-    print "Цель игры: успешное окончание курсов по повышению квалификации.\n"
-    print "Главный герой(ГГ) должен поддерживать себя в хорошем состоянии, а именно:\n"
-    print "\n  1) Здоровье героя не должно опускаться ниже 0 (иначе ГГ умирает);"
-    print "\n  2) Довольствие не должно опускаться ниже -8 (иначе ГГ уходит в запой);"
-    print "\n  3) Усталость не должна превышать 90 (иначе ГГ уснёт прямо на месте);\n\n"
-    print "При низком уровне маны (< 15) ГГ начинает терять очки довольства, и он\n"
-    print "рискует впасть в депрессию.\n"
-    print "+---------------------------------------------------+\n"
+    puts '+---------------------------------------------------+'
+    puts 'Данное приложение является реализацией игры \"Маргинал Валера\".'
+    puts 'Цель игры: успешное окончание курсов по повышению квалификации.'
+    puts 'Главный герой(ГГ) должен поддерживать себя в хорошем состоянии, а именно:'
+    puts "\n  1) Здоровье героя не должно опускаться ниже 0 (иначе ГГ умирает);"
+    puts "  2) Довольствие не должно опускаться ниже -10 (иначе ГГ уходит в запой);\n\n"
+    puts 'При мане = 0, ГГ начинает терять очки довольства (-1) при каждом действии;'
+    puts 'При усталости = 100, ГГ начинает терять очки довольства (-1) при каждом действии;'
+    puts 'Негативные эффекты могут суммироваться.'
+    puts '+---------------------------------------------------+'
   end
 end
