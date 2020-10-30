@@ -15,61 +15,61 @@ class Game
     start_end_game
   end
 
-	def check_status
-		if @valera.health <= 0
-			puts 'Вы погибли!'
-		@valera.health = 100 elsif @valera.health > 100
-		end
+  def check_status
+    if @valera.health <= 0
+      puts 'Вы погибли!'
+      @valera.health = 100 elsif @valera.health > 100
+    end
 
-		if @valera.mana <= 0
-			@valera.mana = 0
-			@valera.happiens = @valera.happiens - 1
-		elsif @valera.mana > 100
-			@valera.mana = 100
-		end
-		
-		if @valera.happiens <= -10
-			system 'clear'
-			puts 'Валера сломался пот гнётом судьбы, не выдержав испытаний, что на него выпали.'
-			puts 'Валера, стремясь восстановить душевное равновесие, ушёл в запой.'
-			puts '==============================ИГРА=ОКОНЧЕНА=============================='
-			start_end_game
-		elsif @valera.happiens > 10
-			@valera.happiens = 10
-		end
+    if @valera.mana <= 0
+      @valera.mana = 0
+      @valera.happiens = @valera.happiens - 1
+    elsif @valera.mana > 100
+      @valera.mana = 100
+    end
 
-		if @valera.fatigue < 0
-			@valera.fatigue = 0
-		elsif @valera.fatigue >= 100
-			@valera.fatigue = 100
-			@valera.happiens = @valera.happiens - 1
-		end
-	end
+    if @valera.happiens <= -10
+      system 'clear'
+      puts 'Валера сломался пот гнётом судьбы, не выдержав испытаний, что на него выпали.'
+      puts 'Валера, стремясь восстановить душевное равновесие, ушёл в запой.'
+      puts '==============================ИГРА=ОКОНЧЕНА=============================='
+      start_end_game
+    elsif @valera.happiens > 10
+      @valera.happiens = 10
+    end
 
-	def start_end_game
-		loop do
-			puts 'Хотите начать сначала, или выйти из игры?'
-			print 'Ввод >> '
-			input = readline
+    if @valera.fatigue.negative?
+      @valera.fatigue = 0
+    elsif @valera.fatigue >= 100
+      @valera.fatigue = 100
+      @valera.happiens = @valera.happiens - 1
+    end
+  end
 
-			case input[0]
-				when 'Y', 'y'
-					load_game('res/general.ini')
-					game_menu
-				when 'N', 'n'
-					exit 0
-				else
-					print "\nВведены неверные данные! Введите \'Y\' или \'N\'\n"
-			end
-		end
-	end
+  def start_end_game
+    loop do
+      puts 'Хотите начать сначала, или выйти из игры?'
+      print 'Ввод >> '
+      input = readline
+
+      case input[0]
+      when 'Y', 'y'
+        load_game('res/general.ini')
+        game_menu
+      when 'N', 'n'
+        exit 0
+      else
+        print "\nВведены неверные данные! Введите \'Y\' или \'N\'\n"
+      end
+    end
+  end
 
   def game_menu
     system 'clear'
     loop do
-      victory if @valera.money >= 30000
+      victory if @valera.money >= 30_000
 
-	  check_status
+      check_status
       stats
       print "(1) - Пойти на работу\n"
       print "(2) - Отдыхать\n"
@@ -98,19 +98,18 @@ class Game
       when '6'
         valera.sleep
       when '7'
-        begin
+        loop do
           bet = @blackjack.select_bet.to_i
-        end while bet == 0
+          break unless bet.zero?
+        end
 
-		while @valera.money > bet
-			@valera.money = @valera.money + bet * @blackjack.game
-			puts "Текущий счёт: #{@valera.money}"
-			print "\nХотите сыграть ещё? (Y/N)\nВвод >> "
-			input = readline
-			if input[0] != 'Y' && input[0] != 'y'
-				break
-			end
-		end
+        while @valera.money > bet
+          @valera.money = @valera.money + bet * @blackjack.game
+          puts "Текущий счёт: #{@valera.money}"
+          print "\nХотите сыграть ещё? (Y/N)\nВвод >> "
+          input = readline
+          break if input[0] != 'Y' && input[0] != 'y'
+        end
       when '8'
         menu_load
       when '9'
@@ -144,11 +143,11 @@ class Game
       file.each_line { |x| data.push(x) }
     end
 
-    @valera.health = (data[0].chop).to_i
-    @valera.mana = (data[1].chop).to_i
-    @valera.happiens = (data[2].chop).to_i
-    @valera.fatigue = (data[3].chop).to_i
-    @valera.money = (data[4].chop).to_i
+    @valera.health = data[0].chop.to_i
+    @valera.mana = data[1].chop.to_i
+    @valera.happiens = data[2].chop.to_i
+    @valera.fatigue = data[3].chop.to_i
+    @valera.money = data[4].chop.to_i
   end
 
   def stats
