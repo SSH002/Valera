@@ -1,10 +1,12 @@
+require_relative 'blackjack'
 require_relative 'valera'
 
 class Game
-  attr_reader :valera
+  attr_reader :valera, :blackjack
 
   def initialize
     @valera = Valera.new
+    @blackjack = Blackjack.new
   end
 
   def victory
@@ -75,9 +77,10 @@ class Game
       print "(4) - Спеть\n"
       print "(5) - Посмотреть сериал\n"
       print "(6) - Спать\n"
-      print "(7) - Загрузитть игру\n"
-      print "(8) - Сохранить игру\n"
-      print "(9) - Выйти в главное меню\n"
+      print "(7) - Сыграть в \"21\"\n"
+      print "(8) - Загрузитть игру\n"
+      print "(9) - Сохранить игру\n"
+      print "(0) - Выйти в главное меню\n"
       print 'Ввод >> '
       input = readline
 
@@ -95,10 +98,24 @@ class Game
       when '6'
         valera.sleep
       when '7'
-        menu_load
+        begin
+          bet = @blackjack.select_bet.to_i
+        end while bet == 0
+
+		while @valera.money > bet
+			@valera.money = @valera.money + bet * @blackjack.game
+			puts "Текущий счёт: #{@valera.money}"
+			print "\nХотите сыграть ещё? (Y/N)\nВвод >> "
+			input = readline
+			if input[0] != 'Y' && input[0] != 'y'
+				break
+			end
+		end
       when '8'
-        menu_save
+        menu_load
       when '9'
+        menu_save
+      when '0'
         system 'clear'
         break
       else
