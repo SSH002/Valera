@@ -28,7 +28,10 @@ RSpec.describe Game do
       }
     end
     context 'save_game_failed' do
-      it { expect(Game.new.save_game('res/general.ini')).to eq 0 }
+      it {
+        File.delete('saves/save_test.sv')
+        expect(Game.new.save_game('res/general.ini')).to eq 0
+      }
     end
   end
 end
