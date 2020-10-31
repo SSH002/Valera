@@ -17,6 +17,7 @@ loop do
     obj.load_game('res/general.ini')
     obj.game_menu
   when '2'
+<<<<<<< HEAD
     obj.load_game(obj.interface.menu_load)
     obj.game_menu
   when '3'
@@ -27,5 +28,15 @@ loop do
     print "довольства (-1) при каждом действии;\nОтрицательные и положительные эффекты суммируются.\n\n"
   when '4'
     break
+=======
+    obj.menu_load
+    obj.game_menu
+  when '3'
+    obj.rules
+  when '4'
+    break
+  else
+    puts 'Ошибка! Введена неверная команда. Список допустимыхх команд смотрите в меню.'
+>>>>>>> 69d992d5030c1708a9126d0a8c1de447d806a39a
   end
 end
