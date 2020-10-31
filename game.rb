@@ -7,7 +7,7 @@ class Game
 
   def initialize
     @valera = Valera.new
-    @blackjack = Blackjack.new
+    @blackjack = Blackjack.new(0, 0)
     @interface = Interface.new
   end
 
@@ -39,21 +39,17 @@ class Game
     end
   end
 
-  def stats(result)
-    print "Мана: #{@valera.mana}", "\n"
-    print "Довольство: #{@valera.happiens}\n"
-    print "Усталость: #{@valera.fatigue}\n"
-    print "Деньги: #{@valera.money}\n"
-    print "#{result}\n"
-  end
-
   def in_game_menu(result)
     system 'clear'
     victory if @valera.money >= 30_000
 
     @valera.check_status
     depression if @valera.happiens < -9
-    stats(result)
+    print "Мана: #{@valera.mana}", "\n"
+    print "Довольство: #{@valera.happiens}\n"
+    print "Усталость: #{@valera.fatigue}\n"
+    print "Деньги: #{@valera.money}\n"
+    print "#{result}\n"
     @interface.action_list
   end
 
@@ -63,33 +59,33 @@ class Game
       in_game_menu(result)
       input = readline.chop
       case input
-      when '1'
-        result = @valera.go_work
-      when '2'
-        result = @valera.rest
-      when '3'
-        result = @valera.drink_with_marginals
-      when '4'
-        result = @valera.sing
-      when '5'
-        result = @valera.see_serial
-      when '6'
-        result = @valera.sleep
+      when '7'
+        @valera.money = @blackjack.begin(@valera.money)
+      when '8'
+        load_game(@interface.menu_load)
+      when '9'
+        save_game(@interface.menu_save)
+      when '0'
+        break
       end
-      break if check_input(input) == '0'
+      result = check_input(input)
     end
   end
 
   def check_input(input)
     case input
-    when '7'
-      @valera.money = @blackjack.begin(@valera.money)
-    when '8'
-      load_game(@interface.menu_load)
-    when '9'
-      save_game(@interface.menu_save)
-    when '0'
-      '0'
+    when '1'
+      @valera.go_work
+    when '2'
+      @valera.rest
+    when '3'
+      @valera.drink_with_marginals
+    when '4'
+      @valera.sing
+    when '5'
+      @valera.see_serial
+    when '6'
+      @valera.sleep
     end
   end
 
@@ -99,10 +95,14 @@ class Game
       file.each_line { |x| data.push(x) }
     end
 
+    return 0 if data.count != 4
+
     @valera.mana = data[0].chop.to_i
     @valera.happiens = data[1].chop.to_i
     @valera.fatigue = data[2].chop.to_i
     @valera.money = data[3].chop.to_i
+
+    1
   end
 
   def save_game(file_name)
@@ -112,8 +112,12 @@ class Game
     data[2] = @valera.fatigue
     data[3] = @valera.money
 
+    return 0 if File.file?(file_name)
+
     File.open(file_name, 'w') do |file|
       data.each { |x| file.puts(x) }
     end
+
+    1
   end
 end

@@ -1,6 +1,5 @@
 require_relative 'game'
 
-input = '!'
 obj = Game.new
 
 system 'clear'

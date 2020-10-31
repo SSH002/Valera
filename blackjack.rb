@@ -1,6 +1,11 @@
 class Blackjack
   attr_reader :card_valera, :card_enemy
 
+  def initialize(card_valera, card_enemy)
+    @card_valera = card_valera
+    @card_enemy = card_enemy
+  end
+
   def begin(money)
     system 'clear'
     bet = 0
@@ -67,37 +72,37 @@ class Blackjack
     print 'Ваши карты: ', @card_valera, ', Карты противника: ', @card_enemy, "\n"
 
     if @card_valera < 22 && @card_enemy < 22
-      condition_normal
+      condition_normal(false)
     else
-      condition_overflow
+      condition_overflow(false)
     end
   end
 
-  def condition_normal
+  def condition_normal(test)
     if @card_valera == @card_enemy
-      puts 'Ничья.'
+      puts 'Ничья.' if test == false
       0
     elsif @card_valera > @card_enemy
-      puts 'Победил Валера.'
+      puts 'Победил Валера.' if test == false
       1
     else
-      puts 'Победил соперник.'
+      puts 'Победил соперник.' if test == false
       -1
     end
   end
 
-  def condition_overflow
+  def condition_overflow(test)
     @card_valera = (21 - @card_valera).abs
     @card_enemy = (21 - @card_enemy).abs
 
     if @card_valera == @card_enemy
-      puts 'Ничья.'
+      puts 'Ничья.' if test == false
       0
     elsif @card_valera < @card_enemy
-      puts 'Победил Валера.'
+      puts 'Победил Валера.' if test == false
       1
     else
-      puts 'Победил соперник.'
+      puts 'Победил соперник.' if test == false
       -1
     end
   end

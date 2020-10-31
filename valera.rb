@@ -34,9 +34,10 @@ class Valera
   end
 
   def rest
+    @happiens += 2
     @fatigue -= 15
     @mana -= 5
-    "\nВалера немного отдохнул.\n"
+    "\nВалера немного отдохнул, и его настроена=ие сразу улучшилось.\n"
   end
 
   def drink_with_marginals
