@@ -1,69 +1,100 @@
 class Valera
-	attr_accessor :health, :mana, :happiens, :fatigue, :money
+  attr_accessor :mana, :happiens, :fatigue, :money
 
-	def initialize
-		@money = 0
-	end
+  def initialize
+    @money = 0
+  end
 
-	def go_work
-		@money = @money + 1000
-		@fatigue = @fatigue + 30
-		@mana = @mana - 15
-	end
+  def check_status
+    if @mana <= 0
+      @mana = 0
+      @happiens -= 1
+    end
+    @mana = 100 if @mana > 100
 
-	def rest
-		@fatigue = @fatigue - 15
-		@mana = @mana - 10
-	end
+    @fatigue = 0 if @fatigue.negative?
+    if @fatigue >= 100
+      @fatigue = 100
+      @happiens -= 1
+    end
 
-	def drink_with_marginals
-		if @money >= 1500
-			@mana = @mana + 25
-			@happiens = @happiens + 3
-			@money = @money - 1500
-		else
-			puts 'У Валеры недостаточно средств для того, чтобы выпить с маргиналами.'
-		end
-	end
+    @happiens = 10 if @happiens > 10
+  end
 
-	def sing
-		income = 0
+  def go_work
+    if @mana <= 60
+      @money += 1250
+      @fatigue += 30
+      @mana -= 15
+      "\nНелюбимая работа приносит Валере стабильный доход. По крайней мере, когда он не пьяный в стельку.\n"
+    else
+      @mana -= 10
+      "\nВалера слишком пьян, чтобы идти на работу.\n"
+    end
+  end
 
-		if @mana >= 30
-			income = 50 + rand(401)
-			@money = @money + income
-		else
-			income = 0
-		end
-		@mana = @mana - 15
+  def rest
+    @fatigue -= 15
+    @mana -= 5
+    "\nВалера немного отдохнул.\n"
+  end
 
-		income
-	end
+  def drink_with_marginals
+    if @money >= 1500
+      @mana += 25
+      @happiens += 3
+      @money -= 1500
+      "\nВстречи с собутыльниками по важному поводу всегда радуют Валеру. Правда, обходятся в копеечку.\n"
+    else
+      @mana -= 5
+      "\nУ Валеры недостаточно средств для того, чтобы выпить с маргиналами.\n"
+    end
+  end
 
-	def see_serial
-		@happiens = @happiens + 2
-		@fatigue = @fatigue - 20
-		@mana = @mana - 15
-	end
+  def sing
+    income = 0
 
-	def sleep
-		@happiens = @happiens + 1
-		@fatigue = @fatigue - 50
-		@mana = @mana - 30
-	end
+    if @mana >= 30
+      income = rand(50..450)
+      @money += income
+    else
+      income = 0
+    end
+    @mana -= 15
 
-	def blackjack
-		loop do
-			system 'clear'
-			card_valera = 0
-			card_enemy = 0
-			loop do
-				card_valera = card_valera + 2 + rand(10)
-				card_enemy = card_enemy + 2 + rand(10)
-				print 'Ваши карты: ', card_valera
-				print 'Карты противника: ', card_enemy
-				system 'clear'
-			end
-		end
-	end
+    "\nСлучайные прохожие подкинули Валере #{income} руб. за хорошее пение.\n"
+  end
+
+  def see_serial
+    @happiens += 1
+    @fatigue -= 10
+    @mana -= 5
+    "\nПросмотр хорошего сериала поднимет настроение. К тому же, Валера немного отдохнул.\n"
+  end
+
+  def sleep
+    @happiens += 1
+    @fatigue -= 75
+    @mana -= 30
+    "\nВалера хорошо выспался, и он готов к новым трудовым будням.\n"
+  end
+
+  def blackjack
+    happiens = @happiens
+
+    loop do
+      system 'clear'
+      card_valera = 0
+      card_enemy = 0
+      loop do
+        card_valera += rand(2..11)
+        card_enemy += rand(2..11)
+        print 'Ваши карты: ', card_valera
+        print 'Карты противника: ', card_enemy
+        system 'clear'
+      end
+    end
+
+    @happiens = happiens + 2
+  end
 end
