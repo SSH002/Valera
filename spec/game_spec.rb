@@ -13,18 +13,18 @@ RSpec.describe Game do
         data[2] = 5
         data[3] = 5
         data[4] = 5
-        
+
         File.open('saves/test_save.sv', 'w') do |file|
           data.each { |x| file.puts(x) }
         end
-        
+
         expect(Game.new.load_game('saves/test_save.sv')).to eq 0
       }
     end
     context 'save_game_successful' do
-      it { 
+      it {
         File.delete('saves/test_save.sv')
-        expect(Game.new.save_game('saves/save_test.sv')).to eq 1 
+        expect(Game.new.save_game('saves/save_test.sv')).to eq 1
       }
     end
     context 'save_game_failed' do
