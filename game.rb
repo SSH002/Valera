@@ -75,17 +75,17 @@ class Game
   def check_input(input)
     case input
     when '1'
-      @valera.go_work
+      @valera.go_work(false)
     when '2'
-      @valera.rest
+      @valera.rest(false)
     when '3'
-      @valera.drink_with_marginals
+      @valera.drink_with_marginals(false)
     when '4'
-      @valera.sing
+      @valera.sing(false)
     when '5'
-      @valera.see_serial
+      @valera.see_serial(false)
     when '6'
-      @valera.sleep
+      @valera.sleep(false)
     end
   end
 

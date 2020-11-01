@@ -1,9 +1,7 @@
 class Valera
   attr_accessor :mana, :happiens, :fatigue, :money
 
-  def initialize
-    @money = 0
-  end
+  def initialize; end
 
   def check_status
     if @mana <= 0
@@ -21,38 +19,38 @@ class Valera
     @happiens = 10 if @happiens > 10
   end
 
-  def go_work
+  def go_work(test)
     if @mana <= 60
       @money += 1250
       @fatigue += 30
       @mana -= 15
-      "\nНелюбимая работа приносит Валере стабильный доход. По крайней мере, когда он не пьяный в стельку.\n"
+      "\nНелюбимая работа приносит Валере стабильный доход. По крайней мере, когда он не пьяный.\n" if test == false
     else
-      @mana -= 10
-      "\nВалера слишком пьян, чтобы идти на работу.\n"
+      @mana -= 5
+      "\nВалера слишком пьян, чтобы идти на работу.\n" if test == false
     end
   end
 
-  def rest
-    @happiens += 2
-    @fatigue -= 15
+  def rest(test)
+    @happiens += 1
+    @fatigue -= 30
     @mana -= 5
-    "\nВалера немного отдохнул, и его настроена=ие сразу улучшилось.\n"
+    "\nВалера немного отдохнул.\n" if test == false
   end
 
-  def drink_with_marginals
+  def drink_with_marginals(test)
     if @money >= 1500
       @mana += 25
       @happiens += 3
       @money -= 1500
-      "\nВстречи с собутыльниками по важному поводу всегда радуют Валеру. Правда, обходятся в копеечку.\n"
+      "\nВстречи с собутыльниками по важному поводу всегда радуют Валеру. Правда, обходятся в копеечку.\n" if test == false
     else
       @mana -= 5
-      "\nУ Валеры недостаточно средств для того, чтобы выпить с маргиналами.\n"
+      "\nУ Валеры недостаточно средств для того, чтобы выпить с маргиналами.\n" if test == false
     end
   end
 
-  def sing
+  def sing(test)
     income = 0
 
     if @mana >= 30
@@ -63,21 +61,21 @@ class Valera
     end
     @mana -= 15
 
-    "\nСлучайные прохожие подкинули Валере #{income} руб. за хорошее пение.\n"
+    "\nСлучайные прохожие подкинули Валере #{income} руб. за хорошее пение.\n" if test == false
   end
 
-  def see_serial
-    @happiens += 1
-    @fatigue -= 10
+  def see_serial(test)
+    @happiens += 2
+    @fatigue -= 15
     @mana -= 5
-    "\nПросмотр хорошего сериала поднимет настроение. К тому же, Валера немного отдохнул.\n"
+    "\nПросмотр хорошего сериала поднимет настроение. К тому же, Валера немного отдохнул.\n" if test == false
   end
 
-  def sleep
+  def sleep(test)
     @happiens += 1
     @fatigue -= 75
     @mana -= 30
-    "\nВалера хорошо выспался, и он готов к новым трудовым будням.\n"
+    "\nВалера хорошо выспался, и он готов к новым трудовым будням.\n" if test == false
   end
 
   def blackjack
