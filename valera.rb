@@ -19,7 +19,6 @@ class Valera
     @happiens = 10 if @happiens > 10
   end
 
-
   def check_input(input)
     case input
     when '1'
