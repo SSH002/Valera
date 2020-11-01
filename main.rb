@@ -14,10 +14,12 @@ loop do
   case input[0]
   when '1'
     obj.load_game('res/general.ini')
-    obj.game_menu
+    obj.game_menu(false)
+    system 'clear'
   when '2'
-    obj.load_game(obj.interface.menu_load)
-    obj.game_menu
+    obj.load_game(obj.interface.menu_load(false, ''))
+    obj.game_menu(false)
+    system 'clear'
   when '3'
     print "Данное приложение является реализацией игры \"Маргинал Валера\".\nЦель игры: успешное окончание курсов "
     print "по повышению квалификации. \nГлавный герой(ГГ) должен поддерживать себя в хорошем состоянии, а именно:\n"

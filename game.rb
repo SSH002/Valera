@@ -1,106 +1,95 @@
 require_relative 'valera'
-require_relative 'blackjack'
 require_relative 'interface'
 
 class Game
-  attr_reader :valera, :interface, :blackjack
+  attr_reader :valera, :interface
 
   def initialize
     @valera = Valera.new
-    @blackjack = Blackjack.new(0, 0)
     @interface = Interface.new
   end
 
-  def victory
-    system 'clear'
-    puts 'Поздравляю! Накоплено достаточно средств, чтобы Валера мог купить себе ноутбук и стать фрилансером.'
-    end_game
-  end
+  def check_end_game(test)
+    if @valera.money >= 30_000
 
-  def depression
-    system 'clear'
-    puts 'Валера сломался пот гнётом судьбы, не выдержав испытаний, что на него выпали.'
-    puts 'Валера, стремясь восстановить душевное равновесие, ушёл в запой.'
-    puts '==================================ПОТРАЧЕНО=================================='
-    end_game
+      system 'clear'
+      puts 'Поздравляем! Накоплено достаточно средств, чтобы Валера мог купить себе ноутбук и стать фрилансером.'
+      puts 'Теперь Валера сможет браться за заказы по вёрстке сайтов, не отходя от домашнего мини-бара.'
+      puts '***=========================================!!!ПОБЕДА!!!=========================================***'
+      end_game if test == false
+      return 2
+    end
+    if @valera.happiens < -9
+
+      system 'clear'
+      puts 'Валера сломался пот гнётом судьбы, не выдержав испытаний, что на него выпали.'
+      puts 'Валера, стремясь восстановить душевное равновесие, ушёл в запой.'
+      puts '==================================ПОТРАЧЕНО=================================='
+      end_game if test == false
+      return 1
+    end
+    0
   end
 
   def end_game
-    puts 'Хотите начать сначала (Y), или выйти из игры?'
-    print 'Ввод >> '
-    input = readline
+    print "Хотите начать сначала (Y), или выйти из игры?\nВвод >> "
 
-    case input[0]
-    when 'Y', 'y'
+    if readline.chop == 'y'
       load_game('res/general.ini')
-      game_menu
-    else
-      exit 0
+      game_menu(false)
     end
+    exit
   end
 
-  def in_game_menu(result)
+  def in_game_menu(result, test)
     system 'clear'
-    victory if @valera.money >= 30_000
 
-    @valera.check_status
-    depression if @valera.happiens < -9
-    print "Мана: #{@valera.mana}", "\n"
+    @valera.check_status if test == false
+    print "Мана: #{@valera.mana}\n"
     print "Довольство: #{@valera.happiens}\n"
     print "Усталость: #{@valera.fatigue}\n"
     print "Деньги: #{@valera.money}\n"
     print "#{result}\n"
     @interface.action_list
+    check = check_end_game(test)
+    return check if test == true
   end
 
-  def game_menu
+  def game_menu(test)
     result = ''
     loop do
-      in_game_menu(result)
-      input = readline.chop
+      check = in_game_menu(result, test)
+      input = readline.chop if test == false
       case input
+      when '1', '2', '3', '4', '5', '6'
+        result = @valera.check_input(input)
       when '7'
-        @valera.money = @blackjack.begin(@valera.money)
+        load_game(@interface.menu_load(false, ''))
       when '8'
-        load_game(@interface.menu_load)
+        save_game(@interface.menu_save(false, ''))
       when '9'
-        save_game(@interface.menu_save)
-      when '0'
         break
+      else
+        result = ''
+        @valera.happiens += 1 if @valera.mana.zero?
+        @valera.happiens += 1 if @valera.fatigue == 100
       end
-      result = check_input(input)
+      return check if test == true
     end
   end
 
-  def check_input(input)
-    case input
-    when '1'
-      @valera.go_work(false)
-    when '2'
-      @valera.rest(false)
-    when '3'
-      @valera.drink_with_marginals(false)
-    when '4'
-      @valera.sing(false)
-    when '5'
-      @valera.see_serial(false)
-    when '6'
-      @valera.sleep(false)
-    end
-  end
-
-  def load_game(filename)
+  def load_game(file_name)
     data = []
-    File.open(filename, 'r') do |file|
+    File.open(file_name, 'r') do |file|
       file.each_line { |x| data.push(x) }
     end
 
     return 0 if data.count != 4
 
-    @valera.mana = data[0].chop.to_i
-    @valera.happiens = data[1].chop.to_i
-    @valera.fatigue = data[2].chop.to_i
-    @valera.money = data[3].chop.to_i
+    @valera.mana = data[0].to_i
+    @valera.happiens = data[1].to_i
+    @valera.fatigue = data[2].to_i
+    @valera.money = data[3].to_i
 
     1
   end
