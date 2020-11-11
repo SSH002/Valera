@@ -1,9 +1,7 @@
 class Valera
   attr_accessor :mana, :happiens, :fatigue, :money
 
-  def initialize
-    @money = 0
-  end
+  def initialize; end
 
   def check_status
     if @mana <= 0
@@ -21,20 +19,38 @@ class Valera
     @happiens = 10 if @happiens > 10
   end
 
+  def check_input(input)
+    case input
+    when '1'
+      go_work
+    when '2'
+      rest
+    when '3'
+      drink_with_marginals
+    when '4'
+      sing
+    when '5'
+      see_serial
+    when '6'
+      sleep
+    end
+  end
+
   def go_work
     if @mana <= 60
       @money += 1250
       @fatigue += 30
       @mana -= 15
-      "\nНелюбимая работа приносит Валере стабильный доход. По крайней мере, когда он не пьяный в стельку.\n"
+      "\nНелюбимая работа приносит Валере стабильный доход. По крайней мере, когда он не пьяный.\n"
     else
-      @mana -= 10
+      @mana -= 5
       "\nВалера слишком пьян, чтобы идти на работу.\n"
     end
   end
 
   def rest
-    @fatigue -= 15
+    @happiens += 1
+    @fatigue -= 30
     @mana -= 5
     "\nВалера немного отдохнул.\n"
   end
@@ -47,7 +63,7 @@ class Valera
       "\nВстречи с собутыльниками по важному поводу всегда радуют Валеру. Правда, обходятся в копеечку.\n"
     else
       @mana -= 5
-      "\nУ Валеры недостаточно средств для того, чтобы выпить с маргиналами.\n"
+      "\nУ Валеры недостаточно денег, чтобы выпить с маргиналами.\n"
     end
   end
 
@@ -66,10 +82,10 @@ class Valera
   end
 
   def see_serial
-    @happiens += 1
-    @fatigue -= 10
+    @happiens += 2
+    @fatigue -= 15
     @mana -= 5
-    "\nПросмотр хорошего сериала поднимет настроение. К тому же, Валера немного отдохнул.\n"
+    "\nПросмотр хорошего сериала поднимет настроение. К тому же, Валера отдохнул.\n"
   end
 
   def sleep
@@ -79,22 +95,8 @@ class Valera
     "\nВалера хорошо выспался, и он готов к новым трудовым будням.\n"
   end
 
-  def blackjack
-    happiens = @happiens
-
-    loop do
-      system 'clear'
-      card_valera = 0
-      card_enemy = 0
-      loop do
-        card_valera += rand(2..11)
-        card_enemy += rand(2..11)
-        print 'Ваши карты: ', card_valera
-        print 'Карты противника: ', card_enemy
-        system 'clear'
-      end
-    end
-
-    @happiens = happiens + 2
+  def fix_idleness
+    @valera.happiens += 1 if @valera.mana.zero?
+    @valera.happiens += 1 if @valera.fatigue == 100
   end
 end
