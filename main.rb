@@ -4,9 +4,9 @@ obj = Game.new
 
 system 'clear'
 loop do
-  puts '(1) - Начать новую игру'
-  puts '(2) - Загрузить игру'
-  puts '(3) - Об игре'
+  print "(1) - Начать новую игру\n"
+  print "(2) - Загрузить игру\n"
+  print "(3) - Об игре\n"
   print "(4) - Выйти из игры\nВвод >> "
   input = readline
 

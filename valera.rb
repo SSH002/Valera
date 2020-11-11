@@ -94,9 +94,4 @@ class Valera
     @mana -= 30
     "\nВалера хорошо выспался, и он готов к новым трудовым будням.\n"
   end
-
-  def fix_idleness
-    @valera.happiens += 1 if @valera.mana.zero?
-    @valera.happiens += 1 if @valera.fatigue == 100
-  end
 end

@@ -57,7 +57,6 @@ class Game
 
   def game_menu(test)
     result = ''
-
     loop do
       check = in_game_menu(result, test)
       input = readline.chop if test == false
@@ -72,7 +71,8 @@ class Game
         break
       else
         result = ''
-        @valera.fix_idleness
+        @valera.happiens += 1 if @valera.mana.zero?
+        @valera.happiens += 1 if @valera.fatigue == 100
       end
       return check if test == true
     end
