@@ -1,97 +1,44 @@
 class Valera
-  attr_accessor :mana, :happiens, :fatigue, :money
+  attr_accessor :status
 
-  def initialize; end
+  def initialize(mana = 0, happiens = 0, money = 0, fatigue = 0)
+    @status = {
+      'mana' => mana,
+      'happiens' => happiens,
+      'fatigue' => fatigue,
+      'money' => money
+    }
+  end
 
-  def check_status
-    if @mana <= 0
-      @mana = 0
-      @happiens -= 1
+  def check_status(status)
+    fix_status(status)
+    if check_mana(status['mana']) && check_happiens(status['happiens']) \
+       && check_fatigue(status['fatigue']) && check_money(status['money'])
+      @status = status
+      return true
     end
-    @mana = 100 if @mana > 100
-
-    @fatigue = 0 if @fatigue.negative?
-    if @fatigue >= 100
-      @fatigue = 100
-      @happiens -= 1
-    end
-
-    @happiens = 10 if @happiens > 10
+    false
   end
 
-  def check_input(input)
-    case input
-    when '1'
-      go_work
-    when '2'
-      rest
-    when '3'
-      drink_with_marginals
-    when '4'
-      sing
-    when '5'
-      see_serial
-    when '6'
-      sleep
-    end
+  def fix_status(status)
+    status['mana'] = 0 if (status['mana']).negative?
+    status['happiens'] = 10 if status['happiens'] > 10
+    status['fatigue'] = 0 if (status['fatigue']).negative?
   end
 
-  def go_work
-    if @mana <= 60
-      @money += 1250
-      @fatigue += 30
-      @mana -= 15
-      "\nНелюбимая работа приносит Валере стабильный доход. По крайней мере, когда он не пьяный.\n"
-    else
-      @mana -= 5
-      "\nВалера слишком пьян, чтобы идти на работу.\n"
-    end
+  def check_mana(mana)
+    mana >= 0 && mana <= 100
   end
 
-  def rest
-    @happiens += 1
-    @fatigue -= 30
-    @mana -= 5
-    "\nВалера немного отдохнул.\n"
+  def check_happiens(happiens)
+    happiens <= 10
   end
 
-  def drink_with_marginals
-    if @money >= 1500
-      @mana += 25
-      @happiens += 3
-      @money -= 1500
-      "\nВстречи с собутыльниками по важному поводу всегда радуют Валеру. Правда, обходятся в копеечку.\n"
-    else
-      @mana -= 5
-      "\nУ Валеры недостаточно денег, чтобы выпить с маргиналами.\n"
-    end
+  def check_fatigue(fatigue)
+    fatigue >= 0 && fatigue <= 100
   end
 
-  def sing
-    income = 0
-
-    if @mana >= 30
-      income = rand(50..450)
-      @money += income
-    else
-      income = 0
-    end
-    @mana -= 15
-
-    "\nСлучайные прохожие подкинули Валере #{income} руб. за хорошее пение.\n"
-  end
-
-  def see_serial
-    @happiens += 2
-    @fatigue -= 15
-    @mana -= 5
-    "\nПросмотр хорошего сериала поднимет настроение. К тому же, Валера отдохнул.\n"
-  end
-
-  def sleep
-    @happiens += 1
-    @fatigue -= 75
-    @mana -= 30
-    "\nВалера хорошо выспался, и он готов к новым трудовым будням.\n"
+  def check_money(money)
+    money >= 0
   end
 end

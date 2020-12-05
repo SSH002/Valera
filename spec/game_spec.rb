@@ -2,60 +2,27 @@ require './game'
 
 RSpec.describe Game do
   describe '.game' do
-    context 'game_victory' do
-      it {
-        obj = Game.new
-        obj.valera.mana = 0
-        obj.valera.fatigue = 0
-        obj.valera.money = 50_000
-        obj.valera.happiens = 0
-
-        expect obj.game_menu(true) == 2
+    context 'check_action' do
+      game = Game.new
+      status = {
+        'mana' => 10,
+        'happiens' => -10,
+        'fatigue' => 25,
+        'money' => 2500
       }
-    end
-    context 'game_defeat' do
-      it {
-        obj2 = Game.new
-        obj2.valera.mana = 0
-        obj2.valera.fatigue = 0
-        obj2.valera.money = 500
-        obj2.valera.happiens = -11
-
-        expect obj2.game_menu(true) == 1
-      }
+      it { expect(game.check_action(status)).to eq false }
     end
 
-    context 'load_game_successful' do
-      it { expect(Game.new.load_game('res/general.ini')).to eq 1 }
-    end
-    context 'load_game_failed' do
-      it {
-        data = []
-        data[0] = 5
-        data[1] = 5
-        data[2] = 5
-        data[3] = 5
-        data[4] = 5
-
-        File.open('saves/test_save.sv', 'w') do |file|
-          data.each { |x| file.puts(x) }
-        end
-
-        expect(Game.new.load_game('saves/test_save.sv')).to eq 0
+    context 'do_action' do
+      game = Game.new
+      expected_status = {
+        'mana' => 0,
+        'happiens' => 0,
+        'fatigue' => 30,
+        'money' => 1250
       }
-    end
-
-    context 'save_game_successful' do
-      it {
-        File.delete('saves/test_save.sv')
-        expect(Game.new.save_game('saves/save_test.sv')).to eq 1
-      }
-    end
-    context 'save_game_failed' do
-      it {
-        File.delete('saves/save_test.sv')
-        expect(Game.new.save_game('res/general.ini')).to eq 0
-      }
+      game.action_item = 1
+      it { expect(game.do_action.status).to eq expected_status }
     end
   end
 end
